@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>咕噜加密 Pro - 2026</title>
+    <style>
+        :root { 
+            --bg: #e0f4ff; --card: #ffffff; --text: #2c3e50; 
+            --primary: #3498db; --gulu: #1abc9c; --border: #d6eaf8;
+        }
+        [data-theme="dark"] {
+            --bg: #1a1c1e; --card: #2c2f33; --text: #ecf0f1; 
+            --primary: #5dade2; --gulu: #48c9b0; --border: #3d444b;
+        }
+        body { font-family: system-ui, -apple-system; background: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; justify-content: center; transition: 0.3s; }
+        .container { background: var(--card); padding: 25px; border-radius: 30px; width: 100%; max-width: 450px; box-shadow: 0 20px 40px rgba(52,152,219,0.15); border: 2px solid var(--border); }
+        
+        header { text-align: center; margin-bottom: 20px; position: relative; }
+        h2 { margin: 0; font-size: 1.5rem; color: var(--primary); letter-spacing: 2px; }
+        .theme-toggle { position: absolute; right: 0; top: 0; font-size: 20px; cursor: pointer; border: none; background: none; }
+
+        textarea { 
+            width: 100%; height: 110px; border: 2px solid var(--border); border-radius: 20px; 
+            padding: 15px; font-size: 16px; background: var(--bg); color: var(--text);
+            box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        textarea:focus { border-color: var(--gulu); box-shadow: 0 0 10px rgba(26,188,156,0.2); }
+
+        .btns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        button { 
+            padding: 15px; border: none; border-radius: 18px; font-weight: 600; font-size: 16px; 
+            color: white; transition: 0.2s; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        button:active { transform: translateY(2px); box-shadow: none; }
+        .btn-enc { background: var(--primary); }
+        .btn-dec { background: var(--gulu); }
+        .btn-copy { background: #9b59b6; }
+        .btn-clear { background: #95a5a6; }
+
+        #output { 
+            margin-top: 20px; padding: 18px; background: var(--bg); border-radius: 20px; 
+            min-height: 60px; word-break: break-all; font-size: 14px; line-height: 1.8;
+            border: 2px dashed var(--primary); position: relative;
+        }
+        .bubble-tip { font-size: 11px; color: var(--primary); text-align: center; margin-top: 10px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        <h2>🫧 咕噜加密 Pro</h2>
+    </header>
+    
+    <textarea id="input" placeholder="在这输入想说的话..."></textarea>
+    
+    <div class="btns-grid">
+        <button class="btn-enc" onclick="processGulu(true)">咕噜加密</button>
+        <button class="btn-dec" onclick="processGulu(false)">咕噜还原</button>
+        <button class="btn-copy" onclick="copyText()">复制结果</button>
+        <button class="btn-clear" onclick="clearAll()">清空重置</button>
+    </div>
+
+    <div id="output">等待吐泡泡...</div>
+    <div class="bubble-tip">2026 Gulu-Tech 强效混淆算法</div>
+</div>
+
+<script>
+    // 咕噜字典 (基于四进制)
+    const guluDict = { '0': '咕噜', '1': '噜噜', '2': '噗噜', '3': '咕唧' };
+    const revGuluDict = { '咕噜': '0', '噜噜': '1', '噗噜': '2', '咕唧': '3' };
+
+    function processGulu(isEnc) {
+        const input = document.getElementById('input').value.trim();
+        const out = document.getElementById('output');
+        if (!input) return;
+
+        try {
+            if (isEnc) {
+                let res = [];
+                for(let i=0; i<input.length; i++) {
+                    // 2026 优化版：将字符转为4进制编码
+                    let q = input.charCodeAt(i).toString(4).padStart(8, '0');
+                    res.push(q.split('').map(d => guluDict[d]).join(''));
+                }
+                out.innerText = res.join('🫧');
+            } else {
+                let parts = input.split('🫧'), res = "";
+                for (let p of parts) {
+                    // 每两个汉字为一个加密词
+                    let words = p.match(/.{2}/g);
+                    if (!words) continue;
+                    let q = words.map(w => revGuluDict[w] || '').join('');
+                    if (q) res += String.fromCharCode(parseInt(q, 4));
+                }
+                out.innerText = res || "咕噜听不懂你在说什么...";
+            }
+        } catch(e) { out.innerText = "❌ 泡泡破掉啦，解析失败"; }
+    }
+
+    async function copyText() {
+        const text = document.getElementById('output').innerText;
+        if (text.length < 3) return;
+        await navigator.clipboard.writeText(text);
+        const btn = document.querySelector('.btn-copy');
+        btn.innerText = "已复制🫧";
+        setTimeout(() => btn.innerText = "复制结果", 1000);
+    }
+
+    function clearAll() {
+        document.getElementById('input').value = "";
+        document.getElementById('output').innerText = "等待吐泡泡...";
+    }
+
+    function toggleTheme() {
+        const d = document.documentElement;
+        d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+</script>
+</body>
+</html>
