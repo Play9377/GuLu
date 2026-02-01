@@ -1,2 +1,3 @@
 # GuLu
 在线咕噜咕噜加密，让语言回归印第安土著语言，咕噜咕噜沟通。
+https://play9377.github.io/GuLu/
